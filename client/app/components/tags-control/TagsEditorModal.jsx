@@ -3,6 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'antd/lib/select';
 import Modal from 'antd/lib/modal';
+import Form from 'antd/lib/form';
 
 const { Option } = Select;
 
@@ -40,6 +41,8 @@ export default class TagsEditorModal extends React.Component {
     const { close, dismiss } = this.props;
     const { result } = this.state;
 
+    const help = result.length ? '' : 'Tagging make it easier to group, search and spot queries';
+
     return (
       <Modal
         visible
@@ -47,16 +50,18 @@ export default class TagsEditorModal extends React.Component {
         onOk={() => close(result)}
         onCancel={dismiss}
       >
-        <Select
-          mode="tags"
-          className="w-100"
-          placeholder="Add some tags..."
-          defaultValue={result}
-          onChange={values => this.setState({ result: map(values, trim) })}
-          autoFocus
-        >
-          {this.selectOptions}
-        </Select>
+        <Form.Item help={help}>
+          <Select
+            mode="tags"
+            className="w-100"
+            placeholder="Add some tags..."
+            defaultValue={result}
+            onChange={values => this.setState({ result: map(values, trim) })}
+            autoFocus
+          >
+            {this.selectOptions}
+          </Select>
+        </Form.Item>
       </Modal>
     );
   }
