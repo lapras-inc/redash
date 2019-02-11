@@ -2,10 +2,14 @@ import { sortBy } from 'underscore';
 import template from './dynamic-table.html';
 import './dynamic-table.css';
 
-function DynamicTable($sanitize) {
+function DynamicTable($sanitize, $location) {
   'ngInject';
 
-  this.itemsPerPage = this.count = 15;
+  this.itemsPerPage = this.count = 30;
+  const itemsPerPage = Number($location.search().itemsPerPage);
+  if (itemsPerPage > 0) {
+    this.itemsPerPage = this.count = itemsPerPage;
+  }
   this.page = 1;
   this.rowsCount = 0;
   this.orderByField = undefined;
