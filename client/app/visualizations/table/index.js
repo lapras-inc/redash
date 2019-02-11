@@ -3,14 +3,18 @@ import { _, partial, isString } from 'underscore';
 import { getColumnCleanName } from '@/services/query-result';
 import template from './table.html';
 
-function formatValue($filter, clientConfig, value, type) {
+function formatValue($filter, clientConfig, value, type, $location) {
   let formattedValue = value;
   switch (type) {
     case 'integer':
-      formattedValue = $filter('number')(value, 0);
+      if ('numberFormat' in $location.search()) {
+        formattedValue = $filter('number')(value, 0);
+      }
       break;
     case 'float':
-      formattedValue = $filter('number')(value, 2);
+      if ('numberFormat' in $location.search()) {
+        formattedValue = $filter('number')(value, 2);
+      }
       break;
     case 'boolean':
       if (value !== undefined) {
@@ -46,7 +50,7 @@ function GridRenderer(clientConfig) {
     },
     template,
     replace: false,
-    controller($scope, $filter) {
+    controller($scope, $filter, $location) {
       $scope.gridColumns = [];
       $scope.gridRows = [];
 
@@ -64,7 +68,7 @@ function GridRenderer(clientConfig) {
           const columns = $scope.queryResult.getColumns();
           columns.forEach((col) => {
             col.title = getColumnCleanName(col.name);
-            col.formatFunction = partial(formatValue, $filter, clientConfig, _, col.type);
+            col.formatFunction = partial(formatValue, $filter, clientConfig, _, col.type, $location);
           });
 
           $scope.gridRows = $scope.queryResult.getData();
